@@ -1,0 +1,36 @@
+<form id="form" action="">
+  <div class="form-section">
+  <label for="search-engine">Search</label>
+  <input type="text" name="search" class="input" value=""/>
+</div>
+<div class="form-section">
+  <label for="name">Names</label>
+  <% if (data.names) { %>
+    <ul>
+    <% data.names.forEach((n) => { %>
+      <li><input class ="cb" type="checkbox" name="<%= n %>" value="<%= n %>"><%= n %></input></li>
+    <% }); %>
+  </ul>
+  <% } %>
+</div>
+<div class="form-section">
+  <label for="values">Values</label>
+  <% if (data.values) { %>
+    <ul>
+    <% data.values.forEach((v) => { %>
+      <li><input class ="cb" type="checkbox" name="<%= v %>" value="<%= v %>"><%= v %></input></li>
+    <% }); %>
+  </ul>
+  <% } %>
+</div>
+<div class="form-section">
+  <label for="facets">Facets</label>
+  <% if (data.facets) { %>
+    <ul>
+    <% data.facets.forEach((f) => { %>
+      <li><input class ="cb" type="checkbox" name="<%= f %>" value="<%= f %>"><%= f %></input></li>
+    <% }); %>
+  </ul>
+  <% } %>
+</div>
+</form>

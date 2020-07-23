@@ -1,5 +1,10 @@
+
 window.addEventListener("load", () => {
   console.log("hi")
+  console.log(card);
+  console.log(JsonPollock);
+  const rooEl = JsonPollock.render(card);
+  document.getElementById('container').appendChild(rooEl); 
   let long;
   let lat;
   let tempDesc = document.querySelector(".temperature-description");

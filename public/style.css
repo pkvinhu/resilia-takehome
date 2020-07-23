@@ -5,7 +5,8 @@
 }
 
 body {
-    height: 100vh;
+    height: auto;
+    padding: 25px;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -13,11 +14,12 @@ body {
     background: linear-gradient(rgb(47, 150, 163), rgb(48, 62, 143));
     font-family: sans-serif;
     color: white;
+    overflow: scroll;
 }
 
 #form {
     height: auto;
-    width: 50%;
+    width: 100%;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
@@ -30,7 +32,11 @@ ul {
     list-style: none;
  }
 
-
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .form-section {
     padding: 20px;

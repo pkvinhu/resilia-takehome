@@ -1,69 +1,130 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    height: auto;
-    padding: 25px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    background: linear-gradient(rgb(47, 150, 163), rgb(48, 62, 143));
-    font-family: sans-serif;
-    color: white;
-    overflow: scroll;
+  height: auto;
+  padding: 25px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(rgb(47, 150, 163), rgb(48, 62, 143));
+  font-family: sans-serif;
+  color: white;
+  overflow: scroll;
+}
+
+.city-input,
+.city-label,
+.not_submit {
+  margin: 2px;
+  width: auto;
+  padding: 2px;
+}
+
+.not_submit {
+    background-color: lightgrey;
+    color: black;
+    border: 1px solid black;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#container {
+  margin: 20px;
+}
+
+.degree-section {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.degree-section span {
+  margin: 10px;
+  font-size: 30px;
+}
+.degree-section h2 {
+  font-size: 40px;
+}
+
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.6;
 }
 
 #form {
-    height: auto;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  margin: 20px;
 }
 
-ul { 
-    height: auto;
-    width: 300px;
-    column-count: 2;
-    list-style: none;
- }
-
 .form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
 }
 
 .form-section {
-    padding: 20px;
+  align-items: center;
+  padding: 20px;
+}
+
+#inner-container {
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  flex-wrap: wrap;
+  height: auto;
 }
 
 .location,
 .temperature {
-    height: 30vh;
-    width: 50%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+  height: 30vh;
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.lp-json-pollock {
+  width: 150px;
+  height: auto;
+  position: none;
+}
+
+.p {
+  width: auto;
+  height: auto;
+  display: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  padding: 2px;
+}
+
+.paging {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  width: auto;
 }
 
 .temperature {
-    flex-direction: column;
+  flex-direction: column;
 }
 
-.degree-section {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-.degree-section span {
-    margin: 10px;
-    font-size: 30px;
-}
-.degree-section h2 {
-    font-size: 40px;
+ul {
+  height: auto;
+  width: 500px;
+  column-count: 2;
+  list-style: none;
 }

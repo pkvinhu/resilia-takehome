@@ -1,36 +1,14 @@
 {
-  "names": [
-    "Cuisine",
-    "Content Type",
-    "Perk Type",
-    "POI",
-    "Max Distance",
-    "Time Zone",
-    "Country 3 Letter Code",
-    "Source"
-  ],
   "values": [
-    "American",
+    "Attractions",
+    "Cruises",
     "Dining",
-    "LifeStyle",
-    "Spa",
-    "NightLife",
-    "About",
-    "Privacy",
-    "Offers",
-    "Any",
-    "Restaurant",
-    "Other",
-    "EST",
-    "IST",
-    "PST",
-    "SGT",
-    "IND",
-    "USA",
-    "FRC",
-    "EUR",
-    "Instant answers",
-    "Guide book"
-  ],
-  "facets": ["Cuisine", "Price Range", "Dress Code", "Ambience"]
+    "Experiences",
+    "Hotels",
+    "Nightlife",
+    "Shopping",
+    "Spas",
+    "Tours",
+    "Vacation Packages"
+  ]
 }

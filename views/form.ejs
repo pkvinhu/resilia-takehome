@@ -1,40 +1,55 @@
 <div class="form-container">
-<form id="form" action="">
+<form id="form">
   <div class="form-section">
-  <label for="search-engine">Search</label>
-  <input type="text" name="search" class="input" value=""/>
+  <label class="city-label" for="search-engine">Search City:  </label>
+  <input type="text" name="search" class="city-input" value=""/>
+  <a class="not_submit" href="#" onclick="getStructuredContent()">Get Structured Content</a>
 </div>
+<% if (data.names) { %>
 <div class="form-section">
   <label for="name">Names</label>
-  <% if (data.names) { %>
-    <ul>
+  
+    <ul class="list-names">
     <% data.names.forEach((n) => { %>
       <li><input class ="cb" type="checkbox" name="<%= n %>" value="<%= n %>"><%= n %></input></li>
     <% }); %>
   </ul>
-  <% } %>
+  
 </div>
+<% } %>
+<% if (data.values) { %>
 <div class="form-section">
-  <label for="values">Values</label>
-  <% if (data.values) { %>
-    <ul>
+  <label for="values">Content Type</label>
+  
+    <ul class="list-content-type">
     <% data.values.forEach((v) => { %>
       <li><input class ="cb" type="checkbox" name="<%= v %>" value="<%= v %>"><%= v %></input></li>
     <% }); %>
   </ul>
-  <% } %>
+  
 </div>
+<% } %>
+<% if (data.facets) { %>
 <div class="form-section">
   <label for="facets">Facets</label>
-  <% if (data.facets) { %>
-    <ul>
+  
+    <ul class="list-facets">
     <% data.facets.forEach((f) => { %>
       <li><input class ="cb" type="checkbox" name="<%= f %>" value="<%= f %>"><%= f %></input></li>
     <% }); %>
   </ul>
-  <% } %>
+  
 </div>
+<% } %>
+
 </form>
-<div id="container"></div>
+<div id="container">
+  <div class="paging">
+    <a href="#" class="page-left p" onclick="paging('left')">&laquo;</a>
+    <div class="numbers p"></div>
+    <a href="#" class="page-right p" onclick="paging('right')">&raquo;</a>
+  </div>
+  <div id="inner-container" data-value="1"></div>
+</div>
 
 </div>

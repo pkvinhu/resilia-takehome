@@ -4,6 +4,17 @@
   box-sizing: border-box;
 }
 
+.add_sc {
+  background-color:lightgrey;
+  color:black;
+  font-size:10px;
+  padding:1px;
+  margin:2px;
+  width: auto;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+}
 body {
   height: auto;
   padding: 25px;
@@ -17,6 +28,10 @@ body {
   overflow: scroll;
 }
 
+.card-container {
+  align-items: center;
+}
+
 .city-input,
 .city-label,
 .not_submit {
@@ -26,28 +41,15 @@ body {
 }
 
 .not_submit {
-    background-color: lightgrey;
-    color: black;
-    border: 1px solid black;
-    cursor: pointer;
-    text-decoration: none;
+  background-color: lightgrey;
+  color: black;
+  border: 1px solid black;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 #container {
   margin: 20px;
-}
-
-.degree-section {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-.degree-section span {
-  margin: 10px;
-  font-size: 30px;
-}
-.degree-section h2 {
-  font-size: 40px;
 }
 
 .disabled {
@@ -86,15 +88,6 @@ body {
   height: auto;
 }
 
-.location,
-.temperature {
-  height: 30vh;
-  width: 50%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
 .lp-json-pollock {
   width: 150px;
   height: auto;
@@ -118,8 +111,14 @@ body {
   width: auto;
 }
 
-.temperature {
-  flex-direction: column;
+.sc-placeholder {
+  font-size:12px;
+  border:1px solid black;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
 }
 
 ul {
@@ -127,4 +126,10 @@ ul {
   width: 500px;
   column-count: 2;
   list-style: none;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  width: auto;
 }

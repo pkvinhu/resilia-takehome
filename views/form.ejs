@@ -1,11 +1,12 @@
 <div class="form-container">
   <div class="wrapper">
-<form id="form">
+<div id="form">
   <div class="form-section">
-  <label class="city-label" for="search-engine">Search City:  </label>
-  <input type="text" name="search" class="city-input" value=""/>
-  <a class="not_submit" href="#" onclick="getStructuredContent()">Get Structured Content</a>
-</div>
+    <label class="city-label" for="search-engine">Search City:  </label>
+    <input type="text" name="search" class="city-input" value=""/>
+    <a class="not_submit" href="#" onclick="getStructuredContent()">Get Structured Content</a>
+    <a class="not_submit" onclick="window.location.reload();">Reset</a>
+  </div>
 <% if (data.names) { %>
 <div class="form-section">
   <label for="name">Names</label>
@@ -43,7 +44,7 @@
 </div>
 <% } %>
 
-</form>
+</div>
 </div>
 <div id="container">
   <div class="paging">

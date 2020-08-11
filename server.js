@@ -66,14 +66,14 @@ app.post("/content", async (req, res) => {
     }
   };
   let response;
-  try {
-    response = await rp(URL, payload);
+  rp(URL, payload)
+  .then(response => {
     console.log(response);
-  } catch (e) {
+    res.send(response);
+  }).catch(e => {
     console.log(e);
     res.statusCode(404).send({ error: e });
-  }
-  res.send(response);
+  })
 });
 
 app.post("/test", (req, res) => {

@@ -19,6 +19,7 @@ window.addEventListener("load", () => {
   console.log("hi");
   console.log(card);
   console.log(JsonPollock);
+  
   const rooEl = JsonPollock.render(card);
   document.getElementById("inner-container").appendChild(rooEl);
   // const sc_button = document.querySelector(".submit");

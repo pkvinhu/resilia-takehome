@@ -1,19 +1,11 @@
 const paging = p => {
-  //   let end;
-  //   let beginning;
   let cards;
   if (p == "left") {
-    //end = (currentPage - 1) * 10;
-    //beginning = end - 10;
     currentPage--;
   } else if (p == "right") {
-    //end = (currentPage + 1) * 10;
-    //beginning = end - 10;
     currentPage++;
   } else {
     currentPage = Number(p);
-    //end = currentPage * 10;
-    //beginning = end - 10;
   }
 
   if (currentPage == 1) {
@@ -29,13 +21,9 @@ const paging = p => {
     l.className = "page-right p";
   }
 
-  // console.log("CURRENT PAGE: ", currentPage);
-
-  // if (allCards[currentPage]) {
   cards = allCards[currentPage];
   let item = document.getElementById("inner-container");
   item.innerHTML = "";
-  // console.log(cards);
   for (let i = 0; i < cards.length; i++) {
     let topicName = cards[i].topicName;
     console.log(topicName);
@@ -48,7 +36,12 @@ const paging = p => {
     let child = item.childNodes[item.children.length - 1];
     child.style.minWidth = "150px";
     child.style.padding = "3px";
-    let btn = `<a class="add_sc page-${currentPage}-card-${i}" href="#" name="page-${currentPage}-card-${i}" onclick="editStructuredContentExample(${i}, ${currentPage})">${
+    let btn = `<a class="add_sc page-${currentPage}-card-${i}" href="#" style="display:${
+      carousel.elements.length == 5 &&
+      !addedToSC[`page-${currentPage}-card-${i}`]
+        ? "none"
+        : "flex"
+    }" name="page-${currentPage}-card-${i}" onclick="editStructuredContentExample(${i}, ${currentPage})">${
       addedToSC[`page-${currentPage}-card-${i}`]
         ? "Remove from Card"
         : "Add Card to SC"
@@ -56,6 +49,7 @@ const paging = p => {
     child.innerHTML = btn;
     child.prepend(rooEl);
   }
+  return;
 };
 
 const makeCard = body => {
@@ -113,8 +107,8 @@ const getStructuredContent = () => {
     addedToSC = {};
     carousel.elements = [];
     let wrapper = document.querySelector(".wrapper");
-    console.log(wrapper.lastChild.id)
-    if(wrapper.lastChild.id !== "form") {
+    console.log(wrapper.lastChild.id);
+    if (wrapper.lastChild.id !== "form") {
       wrapper.removeChild(wrapper.lastChild);
     }
   }
@@ -132,27 +126,42 @@ const getStructuredContent = () => {
   console.log("finished grabbing content types");
 
   /* prepare api call */
+  // const controller = new AbortController();
+  axios.defaults.withCredentials = true;
   let payload = {
-    method: "POST",
+    // method: "POST",
+    // signal: controller.signal,
+    // timeout: 5000,
+    crossDomain: true,
     headers: {
+      // credentials: 'include',
+      "Access-Control-Allow-Origin": "*",
       Accept: "application/json, text/plain, */*",
-      "Content-Type": "application/json"
+      "Content-Type": "application/x-www-form-urlencoded"
+      // SameSite: "Secure"
     },
-    body: JSON.stringify({
+    body: {
       city: [city],
       content,
       page: currentPage
-    })
+    }
   };
-  fetch("/content", payload)
-    .then(res => {
-      return res.json();
-    })
-    .then(async data => {
+  // const timeoutId = setTimeout(() => controller.abort(), 5000);
+  axios
+    .post("/content", payload.body, payload.headers)
+    // .then(res => {
+    //   return res.json();
+    // })
+    .then(data => {
+      data = data.data;
       /* establish total records to calculate pages of total entities 
            if result is not zero, proceed to prepare cards for rendering */
       resultCount = data.resultCount;
       if (data.resultCount) {
+        let v = document.querySelector(".validation");
+        if (v) {
+          document.removeChild(v);
+        }
         /* grab paging arrows, number container, and toggle visibility */
         numbers.innerHTML = "";
         r.style.display = "inline";
@@ -205,10 +214,17 @@ const getStructuredContent = () => {
           }
         }
         // console.log(allCards)
+        return editStructuredContentExample();
+      } else {
+        alert(`No results were found, please try again!`);
       }
-      editStructuredContentExample();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      return;
+      // clearTimeout(timeoutId);
+    });
+  return;
 };
 
 const getPerkAvailability = avail => {
@@ -217,6 +233,7 @@ const getPerkAvailability = avail => {
   } else {
     return false;
   }
+  return;
 };
 
 const contentTypeFilter = (cardInProgress, body) => {
@@ -303,6 +320,15 @@ const editStructuredContentExample = (number, page) => {
         let rooEl = JsonPollock.render(carousel);
         wrapper.removeChild(wrapper.lastChild);
         wrapper.appendChild(rooEl);
+        if (carousel.elements.length == 5) {
+          var elements = document.querySelectorAll(".add_sc");
+          console.log("hit 5: ", elements.length, elements[0].textContent);
+          for (var i = 0; i < elements.length; i++) {
+            if (elements[i].textContent == "Add Card to SC") {
+              elements[i].style.display = "none";
+            }
+          }
+        }
       }
     } else {
       button.innerHTML = "Add to card";
@@ -319,16 +345,16 @@ const editStructuredContentExample = (number, page) => {
         }
       }
       el = el.slice(0, cardToRemove).concat(el.slice(cardToRemove + 1));
-      console.log(el)
+      console.log(el);
       carousel.elements = el;
       wrapper.removeChild(wrapper.lastChild);
       if (el.length) {
         let rooEl;
-        if(el.length > 1) {
-          console.log(carousel)
+        if (el.length > 1) {
+          console.log(carousel);
           rooEl = JsonPollock.render(carousel);
         } else {
-          rooEl = JsonPollock.render(el[0])
+          rooEl = JsonPollock.render(el[0]);
         }
         wrapper.appendChild(rooEl);
       } else {
@@ -338,6 +364,32 @@ const editStructuredContentExample = (number, page) => {
         div.className = "sc-placeholder";
         wrapper.append(div);
       }
+      let buttons = document.querySelectorAll(".add_sc");
+      if ((buttons[0].style.display = "none")) {
+        for (let i = 0; i < buttons.length; i++) {
+          if (buttons[i].textContent == "Add Card to SC") {
+            buttons[i].style.display = "flex";
+          }
+        }
+      }
     }
   }
+  return;
 };
+
+const sendStructuredContent = () => {
+  var notifyWhenDone = function(err) {
+    if (err) {
+      console.log(err)
+    }
+    console.log("The deed is done.")
+  };
+  
+  var cmdName = lpTag.agentSDK.cmdNames.writeSC; // = "Write StructuredContent"
+  var data = {
+    json: carousel,
+    metadata: []
+  };
+  
+  lpTag.agentSDK.command(cmdName, data, notifyWhenDone);
+}

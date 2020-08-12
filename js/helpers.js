@@ -1,5 +1,6 @@
 const paging = p => {
   let cards;
+  /* establish current page */
   if (p == "left") {
     currentPage--;
   } else if (p == "right") {
@@ -8,6 +9,7 @@ const paging = p => {
     currentPage = Number(p);
   }
 
+  /* establish pagination l/r disabled */
   if (currentPage == 1) {
     r.className = "page-left p";
     l.className = "page-right p disabled";
@@ -21,14 +23,15 @@ const paging = p => {
     l.className = "page-right p";
   }
 
+  /* render cards according to current page from all cards hash map */
   cards = allCards[currentPage];
   let item = document.getElementById("inner-container");
   item.innerHTML = "";
   for (let i = 0; i < cards.length; i++) {
-    let topicName = cards[i].topicName;
-    console.log(topicName);
+    /* construct structured content and pass to json-pollock */
     let card = makeCard(cards[i]);
     let rooEl = JsonPollock.render(card);
+    /* create node container to throw cards into */
     let div = document.createElement("div");
     div.id = i + 1;
     div.className = `card-container`;
@@ -36,6 +39,7 @@ const paging = p => {
     let child = item.childNodes[item.children.length - 1];
     child.style.minWidth = "150px";
     child.style.padding = "3px";
+    /* create add/remove button to add to sample structured content view */
     let btn = `<a class="add_sc page-${currentPage}-card-${i}" href="#" style="display:${
       carousel.elements.length == 5 &&
       !addedToSC[`page-${currentPage}-card-${i}`]
@@ -53,6 +57,7 @@ const paging = p => {
 };
 
 const makeCard = body => {
+  /* straight forward: all structured content is in [image, text, link, text[, text]] format */
   let newCard = {
     type: "vertical",
     elements: []
@@ -90,14 +95,13 @@ const makeCard = body => {
     el.push(add);
   }
   newCard = contentTypeFilter(newCard, c);
-  // console.log(newCard);
   return newCard;
 };
 
 const getStructuredContent = () => {
   console.log("hit structured content button");
   /* get city from input bar 
-       reset allCards, currentPage, and city if different from original */
+     reset allCards, currentPage, and city if different from original */
   let city_input = document.querySelector(".city-input").value;
   if (city_input !== city) {
     console.log("hit reset");
@@ -155,7 +159,8 @@ const getStructuredContent = () => {
     .then(data => {
       data = data.data;
       /* establish total records to calculate pages of total entities 
-           if result is not zero, proceed to prepare cards for rendering */
+         if result is not zero, proceed to prepare cards for rendering
+         else alert agent to try search again */
       resultCount = data.resultCount;
       if (data.resultCount) {
         let v = document.querySelector(".validation");
@@ -183,20 +188,17 @@ const getStructuredContent = () => {
         r.className = "page-left p";
         l.className = "page-right p disabled";
 
-        /* clear the cards container, 
-          render all cards before storing in array,
-          replace container nodes w/ first ten cards from search results */
+        /* store results in hashmap by page:cards[], 
+          render only first ten cards */
         item.innerHTML = "";
         let page = 1;
         for (let i = 0; i < data.responses.length; i++) {
           if (i && i % 10 == 0) page++;
           let card = makeCard(data.responses[i]);
-          let rooEl = JsonPollock.render(card);
           if (!allCards[page]) allCards[page] = [data.responses[i]];
           else allCards[page].push(data.responses[i]);
           if (i < 10) {
-            let topicName = data.responses[i].topicName;
-            console.log(topicName);
+            let rooEl = JsonPollock.render(card);
             let div = document.createElement("div");
             div.id = i + 1;
             div.className = `card-container`;
@@ -213,7 +215,7 @@ const getStructuredContent = () => {
             child.prepend(rooEl);
           }
         }
-        // console.log(allCards)
+        /* render empty structured content sample for framing */
         return editStructuredContentExample();
       } else {
         alert(`No results were found, please try again!`);
@@ -233,10 +235,11 @@ const getPerkAvailability = avail => {
   } else {
     return false;
   }
-  return;
 };
 
 const contentTypeFilter = (cardInProgress, body) => {
+  /* switch case to render different additional entities 
+     to cards relative to response type */
   let el = cardInProgress.elements;
   let perk;
   if (!body.attributes["Perk Availability"]) {
@@ -291,19 +294,34 @@ const contentTypeFilter = (cardInProgress, body) => {
 
 const editStructuredContentExample = (number, page) => {
   console.log("hit edit structured content: ", page, number);
-  console.log(addedToSC);
   /* number is card number on page
      page is page number 
      name is the title name of card */
   let div;
+  let sendBtn;
   let wrapper = document.querySelector(".wrapper");
+  let scSample = document.querySelector(".sc-placeholder");
   if (number === undefined) {
+    scSample = document.createElement("div");
     div = document.createElement("div");
     div.innerHTML = "No cards selected for structured content yet";
     div.className = "sc-placeholder";
-    wrapper.append(div);
+    scSample.append(div)
+    wrapper.append(scSample);
+    sendBtn = document.createElement("a");
+    sendBtn.className = "send-sc-btn";
+    sendBtn.href = "#";
+    sendBtn.innerHTML = "Send to Conversation"
+    sendBtn.style.display = "none";
+    sendBtn.onclick = `${
+      carousel.elements.length <= 1
+        ? `sendStructuredContent(${carousel.elements[0]})`
+        : `sendStructuredContent(${carousel})`
+    }`;
+    scSample.append(sendBtn);
   } else if (number >= 0) {
-    console.log(allCards[page][number]);
+    sendBtn = document.querySelector(".send-sc-btn");
+    sendBtn.style.display = "flex";
     let button = document.querySelector(`.page-${page}-card-${number}`);
     /* if card is not currently added to sample, add it */
     if (!addedToSC[`page-${page}-card-${number}`]) {
@@ -312,17 +330,17 @@ const editStructuredContentExample = (number, page) => {
       let card = makeCard(allCards[page][number]);
       if (carousel.elements.length == 0) {
         let rooEl = JsonPollock.render(card);
-        wrapper.removeChild(wrapper.lastChild);
-        wrapper.appendChild(rooEl);
+        scSample.removeChild(scSample.firstChild);
+        scSample.prepend(rooEl);
         carousel.elements.push(card);
       } else if (carousel.elements.length > 0) {
         carousel.elements.push(card);
         let rooEl = JsonPollock.render(carousel);
-        wrapper.removeChild(wrapper.lastChild);
-        wrapper.appendChild(rooEl);
+        scSample.removeChild(scSample.firstChild);
+        scSample.prepend(rooEl);
         if (carousel.elements.length == 5) {
           var elements = document.querySelectorAll(".add_sc");
-          console.log("hit 5: ", elements.length, elements[0].textContent);
+          // console.log("hit 5: ", elements.length, elements[0].textContent);
           for (var i = 0; i < elements.length; i++) {
             if (elements[i].textContent == "Add Card to SC") {
               elements[i].style.display = "none";
@@ -338,38 +356,36 @@ const editStructuredContentExample = (number, page) => {
       let el = carousel.elements;
       let name = allCards[page][number].topicName;
       for (let i = 0; i < el.length; i++) {
-        console.log(el[i]);
+        // console.log(el[i]);
         if (el[i].elements[1].text === name) {
           cardToRemove = i;
           break;
         }
       }
       el = el.slice(0, cardToRemove).concat(el.slice(cardToRemove + 1));
-      console.log(el);
+      // console.log(el);
       carousel.elements = el;
-      wrapper.removeChild(wrapper.lastChild);
+      scSample.removeChild(scSample.firstChild);
       if (el.length) {
         let rooEl;
         if (el.length > 1) {
-          console.log(carousel);
+          // console.log(carousel);
           rooEl = JsonPollock.render(carousel);
         } else {
           rooEl = JsonPollock.render(el[0]);
         }
-        wrapper.appendChild(rooEl);
+        scSample.prepend(rooEl);
       } else {
-        div = document.createElement("div");
-        div.className = "sc-example";
+        sendBtn = document.querySelector(".send-sc-btn");
+        sendBtn.style.display = "none";
+        div = document.querySelector(".sc-placeholder");
         div.innerHTML = "No cards selected for structured content yet";
-        div.className = "sc-placeholder";
-        wrapper.append(div);
       }
       let buttons = document.querySelectorAll(".add_sc");
+      console.log(buttons[0])
       if ((buttons[0].style.display = "none")) {
         for (let i = 0; i < buttons.length; i++) {
-          if (buttons[i].textContent == "Add Card to SC") {
             buttons[i].style.display = "flex";
-          }
         }
       }
     }
@@ -377,19 +393,19 @@ const editStructuredContentExample = (number, page) => {
   return;
 };
 
-const sendStructuredContent = () => {
+const sendStructuredContent = sc => {
+  /* prepare notify cb, cmd, and data before binding to agent SDK */
   var notifyWhenDone = function(err) {
     if (err) {
-      console.log(err)
+      console.log(err);
     }
-    console.log("The deed is done.")
+    console.log("The deed is done.");
   };
-  
-  var cmdName = lpTag.agentSDK.cmdNames.writeSC; // = "Write StructuredContent"
+  var cmdName = lpTag.agentSDK.cmdNames.writeSC;
   var data = {
-    json: carousel,
+    json: sc,
     metadata: []
   };
-  
+
   lpTag.agentSDK.command(cmdName, data, notifyWhenDone);
-}
+};

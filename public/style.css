@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.add_sc {
+.add_sc, .send-sc-btn {
   background-color:lightgrey;
   color:black;
   font-size:10px;
@@ -16,6 +16,7 @@
   justify-content: center;
   /* pointer-events: all; */
 }
+
 body {
   height: auto;
   padding: 25px;
@@ -114,12 +115,14 @@ body {
 
 .sc-placeholder {
   font-size:12px;
-  border:1px solid black;
+  border:1px solid lightgrey;
   color: black;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 2px;
+  min-height: 300px;
 }
 
 ul {
@@ -137,5 +140,5 @@ ul {
 .wrapper {
   display: flex;
   justify-content: space-around;
-  width: auto;
+  min-width: auto;
 }

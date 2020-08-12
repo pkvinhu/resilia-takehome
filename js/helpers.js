@@ -413,7 +413,7 @@ const sendStructuredContent = () => {
     }
     console.log("The deed is done.");
   };
-  var cmdName = lpTag.agentSDK.cmdNames.writeSC;
+  var cmdName = "Write StructuredContent"; //lpTag.agentSDK.cmdNames.writeSC;
   var data = {
     json: carousel.elements.length == 1 ? carousel.elements[0] : carousel,
     metadata: []

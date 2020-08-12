@@ -78,8 +78,11 @@ body {
 }
 
 .form-section {
+  /* display: flex; */
   align-items: center;
   padding: 20px;
+  /* flex-wrap: wrap; */
+  /* width: 300px; */
 }
 
 #inner-container {
@@ -89,6 +92,10 @@ body {
   flex-wrap: wrap;
   height: auto;
 }
+
+/* .list-content-type {
+  width: 200px;
+} */
 
 .lp-json-pollock {
   width: 150px;

@@ -391,10 +391,10 @@ const editStructuredContentExample = (number, page) => {
       }
     }
     let btn = document.querySelector(".send-sc-btn");
-    let fn =
-      carousel.elements.length <= 1
-        ? `sendStructuredContent(${carousel.elements[0]})`
-        : `sendStructuredContent(${carousel})`;
+    let fn = "sendStructuredContent()"
+      // carousel.elements.length <= 1
+      //   ? `sendStructuredContent(${carousel.elements[0]})`
+      //   : `sendStructuredContent(${carousel})`;
     console.log(fn);
     if (carousel.elements.length) {
       btn.setAttribute("onclick", fn);
@@ -403,8 +403,8 @@ const editStructuredContentExample = (number, page) => {
   return;
 };
 
-const sendStructuredContent = sc => {
-  console.log("hit send sc: ", sc);
+const sendStructuredContent = () => {
+  console.log("hit send sc");
   /* prepare notify cb, cmd, and data before binding to agent SDK */
   var notifyWhenDone = function(err) {
     if (err) {
@@ -414,7 +414,7 @@ const sendStructuredContent = sc => {
   };
   var cmdName = lpTag.agentSDK.cmdNames.writeSC;
   var data = {
-    json: sc,
+    json: carousel.elements.length == 1 ? carousel.elements[0] : carousel,
     metadata: []
   };
 

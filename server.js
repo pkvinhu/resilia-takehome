@@ -68,7 +68,7 @@ app.post("/content", async (req, res) => {
   let response;
   rp(URL, payload)
   .then(response => {
-    console.log(response);
+    console.log('success');
     res.send(response);
   }).catch(e => {
     console.log(e);

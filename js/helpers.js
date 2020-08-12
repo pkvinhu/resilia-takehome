@@ -313,13 +313,14 @@ const editStructuredContentExample = (number, page) => {
     sendBtn.href = "#";
     sendBtn.innerHTML = "Send to Conversation"
     sendBtn.style.display = "none";
-    sendBtn.onclick = `${
+    sendBtn.click = `${
       carousel.elements.length <= 1
         ? `sendStructuredContent(${carousel.elements[0]})`
         : `sendStructuredContent(${carousel})`
     }`;
     scSample.append(sendBtn);
   } else if (number >= 0) {
+    scSample.style.border = "none";
     sendBtn = document.querySelector(".send-sc-btn");
     sendBtn.style.display = "flex";
     let button = document.querySelector(`.page-${page}-card-${number}`);
@@ -394,6 +395,7 @@ const editStructuredContentExample = (number, page) => {
 };
 
 const sendStructuredContent = sc => {
+  console.log("hit send sc: ", sc)
   /* prepare notify cb, cmd, and data before binding to agent SDK */
   var notifyWhenDone = function(err) {
     if (err) {

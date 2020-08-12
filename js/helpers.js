@@ -415,8 +415,7 @@ const sendStructuredContent = () => {
   };
   var cmdName = "Write StructuredContent"; //lpTag.agentSDK.cmdNames.writeSC;
   var data = {
-    json: carousel.elements.length == 1 ? carousel.elements[0] : carousel,
-    metadata: []
+    json: carousel.elements.length == 1 ? carousel.elements[0] : carousel
   };
 
   lpTag.agentSDK.command(cmdName, data, notifyWhenDone);

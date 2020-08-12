@@ -306,18 +306,17 @@ const editStructuredContentExample = (number, page) => {
     div = document.createElement("div");
     div.innerHTML = "No cards selected for structured content yet";
     div.className = "sc-placeholder";
-    scSample.append(div)
+    scSample.append(div);
     wrapper.append(scSample);
     sendBtn = document.createElement("a");
     sendBtn.className = "send-sc-btn";
     sendBtn.href = "#";
-    sendBtn.innerHTML = "Send to Conversation"
+    sendBtn.innerHTML = "Send to Conversation";
     sendBtn.style.display = "none";
-    sendBtn.click = `${
-      carousel.elements.length <= 1
-        ? `sendStructuredContent(${carousel.elements[0]})`
-        : `sendStructuredContent(${carousel})`
-    }`;
+    // sendBtn.setAttribute('onclick',
+    // carousel.elements.length <= 1
+    //   ? `sendStructuredContent(${carousel.elements[0]})`
+    //   : `sendStructuredContent(${carousel})`);
     scSample.append(sendBtn);
   } else if (number >= 0) {
     scSample.style.border = "none";
@@ -382,20 +381,30 @@ const editStructuredContentExample = (number, page) => {
         div = document.querySelector(".sc-placeholder");
         div.innerHTML = "No cards selected for structured content yet";
       }
+
       let buttons = document.querySelectorAll(".add_sc");
-      console.log(buttons[0])
+      console.log(buttons[0]);
       if ((buttons[0].style.display = "none")) {
         for (let i = 0; i < buttons.length; i++) {
-            buttons[i].style.display = "flex";
+          buttons[i].style.display = "flex";
         }
       }
+    }
+    let btn = document.querySelector(".send-sc-btn");
+    let fn =
+      carousel.elements.length <= 1
+        ? `sendStructuredContent(${carousel.elements[0]})`
+        : `sendStructuredContent(${carousel})`;
+    console.log(fn);
+    if (carousel.elements.length) {
+      btn.setAttribute("onclick", fn);
     }
   }
   return;
 };
 
 const sendStructuredContent = sc => {
-  console.log("hit send sc: ", sc)
+  console.log("hit send sc: ", sc);
   /* prepare notify cb, cmd, and data before binding to agent SDK */
   var notifyWhenDone = function(err) {
     if (err) {

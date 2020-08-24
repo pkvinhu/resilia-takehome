@@ -22,12 +22,4 @@ window.addEventListener("load", () => {
   
   const rooEl = JsonPollock.render(card);
   document.getElementById("inner-container").appendChild(rooEl);
-  // const sc_button = document.querySelector(".submit");
-
-  // sc_button.addEventListener("click", () => {
-  //   event.preventDefault();
-
-  // });
-
-
 });

@@ -414,6 +414,7 @@ const sendStructuredContent = () => {
     console.log("The deed is done.");
   };
   let json = carousel.elements.length == 1 ? carousel.elements[0] : carousel;
+  console.log(json)
   var cmdName = "Write StructuredContent"; //lpTag.agentSDK.cmdNames.writeSC;
   var data = {
     json,

@@ -14,6 +14,7 @@ let carousel = {
   padding: 10,
   elements: []
 };
+lpTag.agentSDK.init();
 
 window.addEventListener("load", () => {
   console.log("hi");

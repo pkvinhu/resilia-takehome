@@ -405,7 +405,7 @@ const editStructuredContentExample = (number, page) => {
 
 const sendStructuredContent = () => {
   console.log("hit send sc");
-  lpTag.agentSDK.init();
+  
   /* prepare notify cb, cmd, and data before binding to agent SDK */
   var notifyWhenDone = function(err) {
     if (err) {

@@ -218,7 +218,7 @@ const getStructuredContent = () => {
         /* render empty structured content sample for framing */
         return editStructuredContentExample();
       } else {
-        alert(`No results were found, please try again!`);
+        alert(`There were no results found. Please update your search terms.`);
       }
     })
     .catch(err => {

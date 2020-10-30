@@ -1,6 +1,15 @@
 let currentPage = 1;
 let allCards = {};
 let city = "";
+let customCardContent = {
+  img: "",
+  title: "",
+  description: "",
+  address: {
+    title: "",
+    uri: ""
+  }
+}
 let content;
 let resultCount;
 let pages;
@@ -40,21 +49,25 @@ window.addEventListener("load", async () => {
   console.log("hi");
   console.log(card);
   console.log(JsonPollock);
-  var onSuccess = function(data) {
-    if(data) {
-    console.log("Agent SDK is initiated: ", data);
-    let body = document.getElementsByTagName("body")[0];
-    body.style.visibility = "visible";
-    }
-  };
+  // var onSuccess = function(data) {
+  //   if(data) {
+  //   console.log("Agent SDK is initiated: ", data);
+  //   let body = document.getElementsByTagName("body")[0];
+  //   body.style.visibility = "visible";
+  //   }
+  // };
 
-  var onError = function(err) {
-    console.log(err);
-  };
+  // var onError = function(err) {
+  //   console.log(err);
+  // };
 
-  var pathToData = "visitorInfo.visitorName";
+  // var pathToData = "visitorInfo.visitorName";
 
-  lpTag.agentSDK.get(pathToData, onSuccess, onError);
+  // lpTag.agentSDK.get(pathToData, onSuccess, onError);
+  let body = document.getElementsByTagName("body")[0];
+  body.style.visibility = "visible";
+
   const rooEl = JsonPollock.render(card);
   document.getElementById("inner-container").appendChild(rooEl);
+
 });

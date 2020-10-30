@@ -7,6 +7,7 @@
     <a class="not_submit" href="#" onclick="getStructuredContent()">Get Structured Content</a>
     <a class="not_submit" onclick="window.location.reload();">Reset</a>
   </div>
+  
 <% if (data.names) { %>
 <div class="form-section">
   <label for="name">Names</label>
@@ -37,7 +38,7 @@
   
     <ul class="list-facets">
     <% data.facets.forEach((f) => { %>
-      <li><input class ="cb" type="checkbox" name="<%= f %>" value="<%= f %>"><%= f %></input></li>
+      <li><input class ="cb" type="checkbox" name="<%= f %>" value="<%= f %>"></input></li>
     <% }); %>
   </ul>
   
@@ -45,6 +46,24 @@
 <% } %>
 
 </div>
+
+  <div class="lp-json-pollock">
+    <div class="lp-json-pollock-layout lp-json-pollock-layout-vertical">
+      <div class="lp-json-pollock-element-image custom-img">
+        <div class="custom-click" onclick="changeToInput('img')">Click to add image</div>
+      </div>
+      <div class="lp-json-pollock-element-button custom-title">
+        <div class="custom-click" onclick="changeToInput('title')">Click to add title</div>
+      </div>
+      <div class="lp-json-pollock-element-button custom-desc">
+        <div class="custom-click" onclick="changeToInput('desc')">Click to add description</div>
+      </div>
+      <div class="lp-json-pollock-element-button custom-link">
+        <div class="custom-click" onclick="changeToInput('link')">Click to add address</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 <div id="container">
   <div class="paging">

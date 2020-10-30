@@ -56,6 +56,52 @@ const paging = p => {
   return;
 };
 
+const addInfoToCustom = (e, type, val) => {
+  if (e.keyCode === 13) {
+    e.preventDefault();
+    if (type === "img") {
+      let wr = document.querySelector(".custom-img");
+      customCardContent.img = val;
+      wr.innerHTML = `<img class="custom-click" onclick="changeToInput('img')" title="hi" src=${val}/>`;
+    } else if (type === "title") {
+      let wr = document.querySelector(".custom-title");
+      customCardContent.title = val;
+      wr.innerHTML = `<div class="custom-click" onclick="changeToInput('title')">${val}</div>`
+    } else if (type === "desc") {
+      let wr = document.querySelector(".custom-desc");
+      customCardContent.description = val;
+      wr.innerHTML = `<div class="custom-click" onclick="changeToInput('desc')">${val}</div>`
+    } 
+  }
+};
+
+const addLinkToCustom = (e, type, val) => {
+  if (e.keyCode === 13) {
+    e.preventDefault();
+    console.log(type, val);
+  }
+};
+
+const changeToInput = type => {
+  if (type === "img") {
+    let wr = document.querySelector(".custom-img");
+    let inp = `<input placeholder='Please input link to cover image' onkeypress='addInfoToCustom(event, "img", this.value)' value='${customCardContent.img}'/>`;
+    wr.innerHTML = inp;
+  } else if (type === "title") {
+    let wr = document.querySelector(".custom-title");
+    let inp = `<input placeholder='Please input text for title' onkeypress='addInfoToCustom(event, "title", this.value)' value='${customCardContent.title}'/>`;
+    wr.innerHTML = inp;
+  } else if (type === "desc") {
+    let wr = document.querySelector(".custom-desc");
+    let inp = `<input placeholder='Please input text for description' onkeypress='addInfoToCustom(event, "desc", this.value)' value='${customCardContent.description}'/>`;
+    wr.innerHTML = inp;
+  } else if (type === "link") {
+    let wr = document.querySelector(".custom-link");
+    let inp = `<input placeholder='Please input address' onkeypress='addLinkToCustom(event, "addr", this.value)'/><input placeholder='Please input URL to address' onkeypress='addLinkToCustom(event, "link", this.value)'/>`;
+    wr.innerHTML = inp;
+  }
+};
+
 const makeCard = body => {
   /* straight forward: all structured content is in [image, text, link, text[, text]] format */
   let newCard = {
@@ -130,7 +176,6 @@ const getStructuredContent = () => {
   console.log("finished grabbing content types");
 
   /* prepare api call */
-  // const controller = new AbortController();
   axios.defaults.withCredentials = true;
   let payload = {
     // method: "POST",
@@ -150,14 +195,13 @@ const getStructuredContent = () => {
       page: currentPage
     }
   };
-  // const timeoutId = setTimeout(() => controller.abort(), 5000);
   axios
     .post("/content", payload.body, payload.headers)
-    // .then(res => {
-    //   return res.json();
-    // })
     .then(data => {
       data = data.data;
+      data.responses = data.responses.sort((a, b) =>
+        a.topicName.localeCompare(b.topicName)
+      );
       /* establish total records to calculate pages of total entities 
          if result is not zero, proceed to prepare cards for rendering
          else alert agent to try search again */
@@ -303,6 +347,7 @@ const editStructuredContentExample = (number, page) => {
   let scSample = document.querySelector(".sc-placeholder");
   if (number === undefined) {
     scSample = document.createElement("div");
+    scSample.className = "sc-sample";
     div = document.createElement("div");
     div.innerHTML = "No cards selected for structured content yet";
     div.className = "sc-placeholder";
@@ -391,10 +436,10 @@ const editStructuredContentExample = (number, page) => {
       }
     }
     let btn = document.querySelector(".send-sc-btn");
-    let fn = "sendStructuredContent()"
-      // carousel.elements.length <= 1
-      //   ? `sendStructuredContent(${carousel.elements[0]})`
-      //   : `sendStructuredContent(${carousel})`;
+    let fn = "sendStructuredContent()";
+    // carousel.elements.length <= 1
+    //   ? `sendStructuredContent(${carousel.elements[0]})`
+    //   : `sendStructuredContent(${carousel})`;
     console.log(fn);
     if (carousel.elements.length) {
       btn.setAttribute("onclick", fn);
@@ -405,7 +450,7 @@ const editStructuredContentExample = (number, page) => {
 
 const sendStructuredContent = () => {
   console.log("hit send sc");
-  
+
   /* prepare notify cb, cmd, and data before binding to agent SDK */
   var notifyWhenDone = function(err) {
     if (err) {
@@ -414,14 +459,15 @@ const sendStructuredContent = () => {
     console.log("The deed is done.");
   };
   let json = carousel.elements.length == 1 ? carousel.elements[0] : carousel;
-  console.log(json)
+  console.log(json);
   var cmdName = "Write StructuredContent"; //lpTag.agentSDK.cmdNames.writeSC;
   var data = {
     json,
-		metadata: [	//metadata is optional
-			{"type":"ExternalId","id":"running364"},
-			{"type":"ExternalId","id":"soccer486"}
-		]
+    metadata: [
+      //metadata is optional
+      { type: "ExternalId", id: "running364" },
+      { type: "ExternalId", id: "soccer486" }
+    ]
   };
 
   lpTag.agentSDK.command(cmdName, data, notifyWhenDone);

@@ -38,6 +38,46 @@ let card = {
   ]
 };
 
+let custom_card = {
+  type: "vertical",
+  elements: [
+    {
+      type: "image",
+      url:
+        "",
+      tooltip: "Image placement"
+    },
+    {
+      type: "text",
+      text: "",
+      tooltip: "Title placement",
+      style: {
+        bold: true,
+        size: "large"
+      }
+    },
+    {
+      type: "text",
+      text: "",
+      tooltip: "Description placement"
+    },
+    {
+      type: "button",
+      tooltip: "Google Maps address placement",
+      title: "",
+      click: {
+        actions: [
+          {
+            type: "link",
+            name: "Address",
+            uri: ""
+          }
+        ]
+      }
+    }
+  ]
+};
+
 let entities = {
   image: {
     type: "image",

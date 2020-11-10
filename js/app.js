@@ -14,6 +14,7 @@ let content;
 let resultCount;
 let pages;
 let addedToSC = {};
+let customAddedToSC = {};
 let r = document.querySelector(".page-right");
 let l = document.querySelector(".page-left");
 let numbers = document.querySelector(".numbers");
@@ -23,6 +24,20 @@ let carousel = {
   padding: 10,
   elements: []
 };
+
+const request_values = {
+  "Attractions": [ "C CAMPING/PARKS", "C LOCAL EVENTS", "C MUSEUM & GALLERY", "C SIGHTSEEING/TOURS", "E THEME PARK", "I DESTINATION INFORMATION" ],
+  "Cruises": [ "T CRUISE" ],
+  "Dining": [ "D RESTAURANT", "D FOOD ORDER", "D PRIVATE CHEF", "D WINE" ],
+  "Experiences": [ "E EXPERIENCES" ],
+  "Hotels": [ "T HOTEL AND B&B" ],
+  "Nightlife": [ "E NIGHTLIFE" ],
+  "Shopping": [ "G SHOPPING INFORMATION" ],
+  "Spas": [ "P SPA/SALON" ],
+  "Tours": [ "C SIGHTSEEING/TOURS" ],
+  "Vacation Packages": [ "X SPECIAL TRAVEL PACKAGE (VIA PARTNERS)"]
+}
+
 try {
   var notificationHandler = function(data) {
     console.log(data);

@@ -66,20 +66,66 @@ const addInfoToCustom = (e, type, val) => {
     } else if (type === "title") {
       let wr = document.querySelector(".custom-title");
       customCardContent.title = val;
-      wr.innerHTML = `<div class="custom-click" onclick="changeToInput('title')">${val}</div>`
+      wr.innerHTML = `<div class="custom-click" onclick="changeToInput('title')">${val}</div>`;
     } else if (type === "desc") {
       let wr = document.querySelector(".custom-desc");
       customCardContent.description = val;
-      wr.innerHTML = `<div class="custom-click" onclick="changeToInput('desc')">${val}</div>`
-    } 
+      wr.innerHTML = `<div class="custom-click" onclick="changeToInput('desc')">${val}</div>`;
+    }
+  }
+
+  // console.log(customCardContent);
+  const { img, title, description } = customCardContent;
+  if (img && title && description) {
+    let c = document.querySelector(".custom-card-container");
+    let last_c = c.childNodes[c.childNodes.length - 1];
+    let node = last_c.nodeName;
+    if (node != "A") {
+      let html =
+        c.innerHTML +
+        `<a class="add_sc" href="#" name="custom" onclick="generateFromCustom()">Generate Card</a>`;
+      c.innerHTML = html;
+    }
   }
 };
 
-const addLinkToCustom = (e, type, val) => {
-  if (e.keyCode === 13) {
-    e.preventDefault();
-    console.log(type, val);
+const generateFromCustom = () => {
+  // console.log("hit generate: ", customCardContent);
+  let card = makeCard(customCardContent);
+  let rooEl = JsonPollock.render(card);
+  let label = document.createElement("div");
+  label.innerHTML = "Generated Card";
+  label.className = "custom-label";
+  let generated_container = document.querySelector(".custom-card-container-2");
+
+  if (generated_container.childNodes.length)
+    generated_container.removeChild(generated_container.firstChild);
+  if (generated_container.childNodes.length)
+    generated_container.removeChild(generated_container.firstChild);
+  generated_container.prepend(rooEl);
+  generated_container.prepend(label);
+
+  let btn =
+    generated_container.innerHTML +
+    `<a class="add_sc" href="#" name="" onclick="addCustomToSC()">Add Card to SC</a>`;
+  generated_container.innerHTML =
+    generated_container.childNodes.length > 2 && allCards
+      ? generated_container.innerHTML
+      : btn;
+  if (carousel.elements.length === 5) {
+    let gen_cont = document.querySelector(".custom-card-container-2");
+    gen_cont.lastChild.style.display = "none";
   }
+};
+
+const addLinkToCustom = e => {
+  e.preventDefault();
+  let add_form = document.querySelector(".address-form");
+  let addr = add_form.elements[0].value;
+  let link = add_form.elements[1].value;
+  customCardContent.address.title = addr;
+  customCardContent.address.uri = link;
+  add_form.innerHTML = `<div class="custom-click" onclick="changeToInput('link')">${addr}</div>`;
 };
 
 const changeToInput = type => {
@@ -97,7 +143,7 @@ const changeToInput = type => {
     wr.innerHTML = inp;
   } else if (type === "link") {
     let wr = document.querySelector(".custom-link");
-    let inp = `<input placeholder='Please input address' onkeypress='addLinkToCustom(event, "addr", this.value)'/><input placeholder='Please input URL to address' onkeypress='addLinkToCustom(event, "link", this.value)'/>`;
+    let inp = `<form class='address-form' onSubmit='addLinkToCustom(event)'><input placeholder='Please input address' value='${customCardContent.address.title}'/><input placeholder='Please input URL to address' value='${customCardContent.address.uri}'/><button type-'submit'>Add Address</button></form>`;
     wr.innerHTML = inp;
   }
 };
@@ -108,40 +154,76 @@ const makeCard = body => {
     type: "vertical",
     elements: []
   };
-  let c = body;
   let el = newCard.elements;
-  let attr = c.attributes;
-  let address = `${attr.Address_1 || ""} ${attr.City || ""}, ${
-    attr.State ? attr.State[0] || "" : ""
-  }`;
-  /* image */
-  let image = { ...entities.image, url: attr["Image_1 URL"] || "no_image.jpg" };
-  el.push(image);
 
-  /* title */
-  let title = {
-    ...entities.text,
-    text: c.topicName || "",
-    style: { bold: true, size: "large" }
-  };
-  el.push(title);
-
-  /* description */
-  let description = { ...entities.text, text: attr["Short Description"] || "" };
-  el.push(description);
-
-  /* address */
-  if (address) {
-    let add = {
-      ...entities.button,
-      title: address || "No Address Available"
+  /* if custom card */
+  if (!body.attributes) {
+    if (body.img) {
+      el.push({ ...entities.image, url: body.img });
+    }
+    if (body.title) {
+      el.push({
+        ...entities.text,
+        text: body.title,
+        style: { bold: true, size: "large" }
+      });
+    }
+    if (body.description) {
+      el.push({ ...entities.text, text: body.description });
+    }
+    if (body.address.title) {
+      let address = { ...entities.button, title: body.address.title };
+      if (body.address.uri) {
+        address.click.actions[0].uri =
+          body.address.uri.slice(0, 8) !== "https://"
+            ? "https://" + body.address.uri
+            : body.address.uri;
+      }
+      el.push(address);
+    }
+    return newCard;
+  } else {
+    let c = body;
+    let attr = c.attributes;
+    let address = `${attr.Address_1 || ""} ${attr.City || ""}, ${
+      attr.State ? attr.State[0] || "" : ""
+    }`;
+    /* image */
+    let image = {
+      ...entities.image,
+      url: attr["Image_1 URL"] || "no_image.jpg"
     };
-    add.click.actions[0].uri =
-      `https://maps.google.com/?q=loc:${attr.Latitude},${attr.Longitude}` || "";
-    el.push(add);
+    el.push(image);
+
+    /* title */
+    let title = {
+      ...entities.text,
+      text: c.topicName || "",
+      style: { bold: true, size: "large" }
+    };
+    el.push(title);
+
+    /* description */
+    let description = {
+      ...entities.text,
+      text: attr["Short Description"] || ""
+    };
+    el.push(description);
+
+    /* address */
+    if (address) {
+      let add = {
+        ...entities.button,
+        title: address || "No Address Available"
+      };
+      add.click.actions[0].uri =
+        `https://maps.google.com/?q=loc:${attr.Latitude},${attr.Longitude}` ||
+        "";
+      el.push(add);
+    }
+    newCard = contentTypeFilter(newCard, c);
+    return newCard;
   }
-  newCard = contentTypeFilter(newCard, c);
-  return newCard;
 };
 
 const getStructuredContent = () => {
@@ -150,14 +232,15 @@ const getStructuredContent = () => {
      reset allCards, currentPage, and city if different from original */
   let city_input = document.querySelector(".city-input").value;
   if (city_input !== city) {
-    console.log("hit reset");
     allCards = {};
+    customAddedToSC = {};
     currentPage = 1;
     city = city_input;
     addedToSC = {};
     carousel.elements = [];
     let wrapper = document.querySelector(".wrapper");
-    console.log(wrapper.lastChild.id);
+    let generated = document.querySelector(".custom-card-container-2");
+    generated.innerHTML = "";
     if (wrapper.lastChild.id !== "form") {
       wrapper.removeChild(wrapper.lastChild);
     }
@@ -174,25 +257,25 @@ const getStructuredContent = () => {
     }
   }
   console.log("finished grabbing content types");
+  let request = [];
+  for (let i = 0; i < content.length; i++) {
+    request = request.concat(request_values[content[i]]);
+  }
 
   /* prepare api call */
   axios.defaults.withCredentials = true;
   let payload = {
-    // method: "POST",
-    // signal: controller.signal,
-    // timeout: 5000,
     crossDomain: true,
     headers: {
-      // credentials: 'include',
       "Access-Control-Allow-Origin": "*",
       Accept: "application/json, text/plain, */*",
       "Content-Type": "application/x-www-form-urlencoded"
-      // SameSite: "Secure"
     },
     body: {
       city: [city],
       content,
-      page: currentPage
+      page: currentPage,
+      request_values: request
     }
   };
   axios
@@ -336,6 +419,109 @@ const contentTypeFilter = (cardInProgress, body) => {
   }
 };
 
+const addCustomToSC = () => {
+  console.log("hit add custom to sc");
+  let sendBtn;
+  let scSample = document.querySelector(".sc-placeholder");
+  let custom = document.querySelector(".custom-card-container-2");
+  scSample.style.border = "none";
+  sendBtn = document.querySelector(".send-sc-btn");
+  sendBtn.style.display = "flex";
+  let c = Object.keys(customAddedToSC);
+  customAddedToSC[`custom-${c.length + 1}`] = customCardContent.title;
+  scSample = checkCarousel(customCardContent, scSample);
+  let html =
+    custom.innerHTML +
+    `<a class="add_sc remove_sc" href="#" onclick="removeCustomFromSC(${c.length +
+      1})">Remove Custom Card ${c.length + 1}</a>`;
+  custom.innerHTML = html;
+};
+
+const removeCustomFromSC = ind => {
+  // console.log("hit remove custom to sc", ind);
+  let scSample = document.querySelector(".sc-placeholder");
+  scSample = removeFromCarousel("custom", scSample, ind);
+  let custom = document.querySelector(".custom-card-container-2");
+  custom.removeChild(custom.lastChild);
+  let keys = Object.keys(customAddedToSC);
+  let vals = Object.values(customAddedToSC);
+  customAddedToSC = {};
+  for (let i = 0; i < keys.length - 1; i++) {
+    customAddedToSC[keys[i]] = vals[i >= ind - 1 ? i + 1 : i];
+  }
+  // console.log("End of remove: ", customAddedToSC)
+};
+
+let checkCarousel = (card, scSample) => {
+  card = makeCard(card);
+  if (carousel.elements.length == 0) {
+    let rooEl = JsonPollock.render(card);
+    scSample.removeChild(scSample.firstChild);
+    scSample.prepend(rooEl);
+    carousel.elements.push(card);
+  } else if (carousel.elements.length > 0) {
+    carousel.elements.push(card);
+    let rooEl = JsonPollock.render(carousel);
+    scSample.removeChild(scSample.firstChild);
+    scSample.prepend(rooEl);
+    if (carousel.elements.length == 5) {
+      var elements = document.querySelectorAll(".add_sc");
+      for (var i = 0; i < elements.length; i++) {
+        if (elements[i].textContent == "Add Card to SC") {
+          elements[i].style.display = "none";
+        }
+      }
+    }
+  }
+  return scSample;
+};
+
+let removeFromCarousel = (type, scSample, number, page) => {
+  let cardToRemove;
+  let el = carousel.elements;
+  let name;
+  if (type === "auto") {
+    addedToSC[`page-${page}-card-${number}`] = false;
+    name = allCards[page][number].topicName;
+  }
+  if (type === "custom") {
+    name = customAddedToSC[`custom-${number}`];
+    console.log("FROM remove: ", number, name);
+  }
+  for (let i = 0; i < el.length; i++) {
+    if (el[i].elements[1].text === name) {
+      cardToRemove = i;
+      break;
+    }
+  }
+
+  el = el.slice(0, cardToRemove).concat(el.slice(cardToRemove + 1));
+  carousel.elements = el;
+  scSample.removeChild(scSample.firstChild);
+  if (el.length) {
+    let rooEl;
+    if (el.length > 1) {
+      rooEl = JsonPollock.render(carousel);
+    } else {
+      rooEl = JsonPollock.render(el[0]);
+    }
+    scSample.prepend(rooEl);
+  } else {
+    let sendBtn = document.querySelector(".send-sc-btn");
+    sendBtn.style.display = "none";
+    div = document.querySelector(".sc-placeholder");
+    div.innerHTML = "No cards selected for structured content yet";
+    div.style.border = "1px solid black";
+  }
+
+  let buttons = document.querySelectorAll(".add_sc");
+  if ((buttons[0].style.display = "none")) {
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].style.display = "flex";
+    }
+  }
+  return scSample;
+};
 const editStructuredContentExample = (number, page) => {
   console.log("hit edit structured content: ", page, number);
   /* number is card number on page
@@ -345,7 +531,7 @@ const editStructuredContentExample = (number, page) => {
   let sendBtn;
   let wrapper = document.querySelector(".wrapper");
   let scSample = document.querySelector(".sc-placeholder");
-  if (number === undefined) {
+  if (number === undefined && !document.querySelector(".sc-sample")) {
     scSample = document.createElement("div");
     scSample.className = "sc-sample";
     div = document.createElement("div");
@@ -358,10 +544,7 @@ const editStructuredContentExample = (number, page) => {
     sendBtn.href = "#";
     sendBtn.innerHTML = "Send to Conversation";
     sendBtn.style.display = "none";
-    // sendBtn.setAttribute('onclick',
-    // carousel.elements.length <= 1
-    //   ? `sendStructuredContent(${carousel.elements[0]})`
-    //   : `sendStructuredContent(${carousel})`);
+
     scSample.append(sendBtn);
   } else if (number >= 0) {
     scSample.style.border = "none";
@@ -372,75 +555,14 @@ const editStructuredContentExample = (number, page) => {
     if (!addedToSC[`page-${page}-card-${number}`]) {
       button.innerHTML = "Remove from card";
       addedToSC[`page-${page}-card-${number}`] = true;
-      let card = makeCard(allCards[page][number]);
-      if (carousel.elements.length == 0) {
-        let rooEl = JsonPollock.render(card);
-        scSample.removeChild(scSample.firstChild);
-        scSample.prepend(rooEl);
-        carousel.elements.push(card);
-      } else if (carousel.elements.length > 0) {
-        carousel.elements.push(card);
-        let rooEl = JsonPollock.render(carousel);
-        scSample.removeChild(scSample.firstChild);
-        scSample.prepend(rooEl);
-        if (carousel.elements.length == 5) {
-          var elements = document.querySelectorAll(".add_sc");
-          // console.log("hit 5: ", elements.length, elements[0].textContent);
-          for (var i = 0; i < elements.length; i++) {
-            if (elements[i].textContent == "Add Card to SC") {
-              elements[i].style.display = "none";
-            }
-          }
-        }
-      }
+      scSample = checkCarousel(allCards[page][number], scSample);
     } else {
-      button.innerHTML = "Add to card";
+      button.innerHTML = "Add Card to SC";
       /* if card is in sample, remove it */
-      addedToSC[`page-${page}-card-${number}`] = false;
-      let cardToRemove;
-      let el = carousel.elements;
-      let name = allCards[page][number].topicName;
-      for (let i = 0; i < el.length; i++) {
-        // console.log(el[i]);
-        if (el[i].elements[1].text === name) {
-          cardToRemove = i;
-          break;
-        }
-      }
-      el = el.slice(0, cardToRemove).concat(el.slice(cardToRemove + 1));
-      // console.log(el);
-      carousel.elements = el;
-      scSample.removeChild(scSample.firstChild);
-      if (el.length) {
-        let rooEl;
-        if (el.length > 1) {
-          // console.log(carousel);
-          rooEl = JsonPollock.render(carousel);
-        } else {
-          rooEl = JsonPollock.render(el[0]);
-        }
-        scSample.prepend(rooEl);
-      } else {
-        sendBtn = document.querySelector(".send-sc-btn");
-        sendBtn.style.display = "none";
-        div = document.querySelector(".sc-placeholder");
-        div.innerHTML = "No cards selected for structured content yet";
-      }
-
-      let buttons = document.querySelectorAll(".add_sc");
-      console.log(buttons[0]);
-      if ((buttons[0].style.display = "none")) {
-        for (let i = 0; i < buttons.length; i++) {
-          buttons[i].style.display = "flex";
-        }
-      }
+      scSample = removeFromCarousel("auto", scSample, number, page);
     }
     let btn = document.querySelector(".send-sc-btn");
     let fn = "sendStructuredContent()";
-    // carousel.elements.length <= 1
-    //   ? `sendStructuredContent(${carousel.elements[0]})`
-    //   : `sendStructuredContent(${carousel})`;
-    console.log(fn);
     if (carousel.elements.length) {
       btn.setAttribute("onclick", fn);
     }

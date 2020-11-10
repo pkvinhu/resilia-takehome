@@ -1,10 +1,12 @@
 "use strict";
 
+require("dotenv").config();
 const express = require("express");
 const PORT = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 const request = require("request");
 const rp = require("request-promise");
+const { sub_key } = process.env;
 
 const app = express();
 app.set("port", PORT);
@@ -28,17 +30,18 @@ app.set("view engine", "ejs");
 // set the home page route
 app.get("/", (req, res) => {
   // ejs render automatically looks in the views folder
-  res.render("index", { data: require("./js/astute-req") });
+  res.render("index", { data: require("./astute-req") });
 });
 
 app.post("/content", async (req, res) => {
-  let { page, city, content } = req.body;
+  let { page, city, content, request_values } = req.body;
   console.log(page, city, content);
+
   let URL = `https://api.aspirelifestyles.com/content/search`;
   let payload = {
     method: "POST",
     headers: {
-      "X-Subscription-Key": "34977765538e46ffbf498cafa68b0c56"
+      "X-Subscription-Key": sub_key
     },
     json: true,
     body: {
@@ -51,7 +54,7 @@ app.post("/content", async (req, res) => {
         },
         {
           name: "Request Type",
-          values: ["D RESTAURANT"]
+          values: request_values
         },
         {
           name: "Program ID",

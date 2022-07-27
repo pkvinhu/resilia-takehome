@@ -23,3 +23,46 @@ upon it onsite.
 
 ## Run
 1. Run `npm start` to start server (app served on `localhost:3000` or custom `PORT` variable in your environment file)
+
+## Additional
+I use the npm package `random-quote-generator` to generate arbitrary "notifications" to be sent to the client when requested. It turns out the logic behind this package is pretty bare bones, so I replaced the code in the `index.js` file with the following to 1) return data as opposed to just logging data in the console and 2) randomize with a greater sample set, with the following:
+```
+var quotes = [{
+        quote: "Whatever you are, be a good one",
+        author: "Abraham Lincoln"
+    },
+    {
+        quote: "You know you’re in love when you can’t fall asleep because reality is finally better than your dreams",
+        author: "Dr. Suess"
+    },
+    {
+        quote: "The purpose of our lives is to be happy.",
+        author: "Dalai Lama"
+    },
+    {
+        quote: "Life is what happens when you're busy making other plans.",
+        author: "John Lennon"
+    },
+    {
+        quote: "Get busy living or get busy dying.",
+        author: "Steven King"
+    },
+    {
+        quote: "You only live once, but if you do it right, once is enough.",
+        author: "Mae West"
+    },
+    {
+        quote: "Many of life’s failures are people who did not realize how close they were to success when they gave up.",
+        author: "Thomas Edison"
+    },
+];
+
+var numberOfQuotes = quotes.length;
+
+exports.generateAQuote = function () {
+    var quoteIndex = Math.floor(Math.random() * numberOfQuotes);
+    const { quote, author } = quotes[quoteIndex];
+    const fullQuote = `"${quote}" - ${author}`
+    return fullQuote;
+};
+```

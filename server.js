@@ -65,8 +65,9 @@ app.delete("/notifications", (req, res) => {
       message: "notifications cleared!",
       notifications: req.session.notifications,
     });
+  } else {
+    res.send({ message: "no notifications to clear!" });
   }
-  res.send({ message: "no notifications to clear!" });
 });
 
 var server = app

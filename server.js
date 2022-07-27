@@ -33,9 +33,6 @@ app.use(
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 
-app.use((req, res, next) => {
-  next();
-})
 // set the home page route
 app.get("/", (req, res) => {
   res.render("index", { data: { message: 'loaded!', notifications: req.session.notifications || [] } });

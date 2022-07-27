@@ -1,15 +1,18 @@
 <div id="notifications">
-  <div class="notifications-section">
-    <a class="not_submit" href="#" onclick="getNotifications()"
-      >Get New Notifications</a
-    >
-  </div>
+  <a class="not_submit" href="#" onclick="getNotifications()"
+    >Get New Notifications</a
+  >
+  <a class="not_submit" href="#" onclick="clearNotifications()"
+    >Clear Notifications</a
+  >
 
   <% if (data.message) { %>
   <div id="notifications-section">
-    <div class="notifications-container">
-      <% if (data.notifications.length) { %> <%
-      data.notifications.forEach((notification, i) => { %>
+    <div id="notifications-container">
+      <% if (data.notifications.length) { %>
+      <h3>Notifications</h3>
+      <hr />
+      <% data.notifications.forEach((notification, i) => { %>
       <div class="notification"><%= i+1%> <%= notification %></div>
       <% }); %> <% } else { %>
       <div>No Notifications!</div>

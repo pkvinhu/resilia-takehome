@@ -7,17 +7,24 @@
   text-decoration: none;
 }
 
-#notifications {
-  height: auto;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-  margin: 20px;
-  /* border: 1px solid black; */
+#notifications-container {
+  width: 50%;
 }
 
-.notifications-section {
+.header {
+  width: 50%;
+}
+
+.notification {
+  background-color: rgb(173, 239, 198);
+  border: 1px solid lightgrey;
+  padding: 10px;
+  border-radius: 20px;
+  height: auto;
+  margin: 20px;
+}
+
+#notifications-section {
   align-items: center;
   padding: 10px;
 }

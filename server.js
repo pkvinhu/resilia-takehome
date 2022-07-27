@@ -1,19 +1,21 @@
 "use strict";
 
 require("dotenv").config();
-var cookieSession = require('cookie-session')
+var cookieSession = require("cookie-session");
 const express = require("express");
 const PORT = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
-var quoteGenerator = require('random-quote-generator');
+var quoteGenerator = require("random-quote-generator");
 
 const app = express();
 
-app.use(cookieSession({
-  name: 'session',
-  keys: [process.env.cookieKey],
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [process.env.cookieKey],
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  })
+);
 
 app.set("port", PORT);
 app.use(express.static(__dirname + "/js"));
@@ -35,12 +37,17 @@ app.set("view engine", "ejs");
 
 // set the home page route
 app.get("/", (req, res) => {
-  res.render("index", { data: { message: 'loaded!', notifications: req.session.notifications || [] } });
+  res.render("index", {
+    data: {
+      message: "loaded!",
+      notifications: req.session.notifications || [],
+    },
+  });
 });
 
-app.get("/notifications", async (req, res) => {
+app.get("/notifications", (req, res) => {
   const quote = quoteGenerator.generateAQuote();
-  if(req.session.notifications) {
+  if (req.session.notifications) {
     req.session.notifications = [...req.session.notifications, quote];
   } else {
     req.session.notifications = [quote];
@@ -49,6 +56,17 @@ app.get("/notifications", async (req, res) => {
     message: "success!",
     notifications: req.session.notifications,
   });
+});
+
+app.delete("/notifications", (req, res) => {
+  if (req.session?.notifications?.length) {
+    req.session.notifications = [];
+    res.send({
+      message: "notifications cleared!",
+      notifications: req.session.notifications,
+    });
+  }
+  res.send({ message: "no notifications to clear!" });
 });
 
 var server = app

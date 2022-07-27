@@ -1,4 +1,4 @@
-### Resilia Take Home – Notifications Mini-System
+# Resilia Take Home – Notifications Mini-System
 
 ## Instructions
 Build a simple app that displays a list of notifications on a web page. The payload of the notification is arbitrary (pick a simple domain based on what you know about our customers) but the attributes that allow it to function as a notification should make sense.

@@ -1,86 +1,57 @@
 "use strict";
 
 require("dotenv").config();
+var cookieSession = require('cookie-session')
 const express = require("express");
 const PORT = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
-const request = require("request");
-const rp = require("request-promise");
-const { sub_key } = process.env;
+var quoteGenerator = require('random-quote-generator');
 
 const app = express();
+
+app.use(cookieSession({
+  name: 'session',
+  keys: [process.env.cookieKey],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
+
 app.set("port", PORT);
 app.use(express.static(__dirname + "/js"));
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/views"));
 app.use(
   bodyParser.json({
-    extended: true
+    extended: true,
   })
 );
 app.use(
   bodyParser.urlencoded({
-    extended: true
+    extended: true,
   })
 );
 
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 
+app.use((req, res, next) => {
+  next();
+})
 // set the home page route
 app.get("/", (req, res) => {
-  // ejs render automatically looks in the views folder
-  res.render("index", { data: require("./astute-req") });
+  res.render("index", { data: { message: 'loaded!', notifications: req.session.notifications || [] } });
 });
 
-app.post("/content", async (req, res) => {
-  let { page, city, content, request_values } = req.body;
-  console.log(page, city, content);
-
-  let URL = `https://api.aspirelifestyles.com/content/search`;
-  let payload = {
-    method: "POST",
-    headers: {
-      "X-Subscription-Key": sub_key
-    },
-    json: true,
-    body: {
-      page: page - 1,
-      pageSize: 500,
-      filters: [
-        {
-          name: "Content Type",
-          values: content
-        },
-        {
-          name: "Request Type",
-          values: request_values
-        },
-        {
-          name: "Program ID",
-          values: ["Default"]
-        },
-        {
-          name: "City",
-          values: city
-        }
-      ],
-      facets: []
-    }
-  };
-  let response;
-  rp(URL, payload)
-  .then(response => {
-    console.log('success');
-    res.send(response);
-  }).catch(e => {
-    console.log(e);
-    res.statusCode(404).send({ error: e });
-  })
-});
-
-app.post("/test", (req, res) => {
-  console.log(req.body);
+app.get("/notifications", async (req, res) => {
+  const quote = quoteGenerator.generateAQuote();
+  if(req.session.notifications) {
+    req.session.notifications = [...req.session.notifications, quote];
+  } else {
+    req.session.notifications = [quote];
+  }
+  res.send({
+    message: "success!",
+    notifications: req.session.notifications,
+  });
 });
 
 var server = app

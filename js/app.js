@@ -33,7 +33,7 @@ const clearNotifications = async () => {
       item.appendChild(div);
     }
   } catch (err) {
-    console.log.apply(err);
+    console.log(err);
     return;
   }
 };

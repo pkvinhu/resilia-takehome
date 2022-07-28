@@ -19,7 +19,7 @@ upon it onsite.
 ## Setup
 1. Make sure [NodeJS](https://nodejs.org/en/download/) is installed in your system
 2. Run `npm i --save` to install node dependencies
-3. `touch .env` to add environment file and add key `cookieKey` into the file
+3. Copy and paste variables in `development.env` file to a `.env` file and add the respective key values
 4. Replace `index.js` code in the `random-quote-generator` node module with the code block under the `Additional` section in this readme
 
 ## Run

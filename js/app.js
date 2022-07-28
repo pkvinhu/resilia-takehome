@@ -1,16 +1,5 @@
 const notificationsApi = async (method) => {
-  /* prepare api call */
-  axios.defaults.withCredentials = true;
-  let payload = {
-    crossDomain: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      Accept: "application/json, text/plain, */*",
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
-
-  return await axios[method]("/notifications", payload.headers);
+  return await axios[method]("/notifications");
 };
 
 const getNotifications = async () => {
